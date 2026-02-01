@@ -1,61 +1,73 @@
-const SUPABASE_URL = "https://fmfonzrtejxvpfjchvfs.supabase.co"
-const SUPABASE_ANON_KEY = "
-sb_publishable_eJX4Dp3CMUHmATSE-dUrLw_nbze3Hgg"
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-)
+// ★ 自分の Supabase 情報に置き換え
+const SUPABASE_URL = "https://fmfonzrtejxvpfjchvfs.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_eJX4Dp3CMUHmATSE-dUrLw_nbze3Hgg";
 
-let user = null
-const status = document.getElementById("status")
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-async function signUp() {
-  const email = emailValue()
-  const password = passwordValue()
-  const { error } = await supabase.auth.signUp({ email, password })
-  status.textContent = error ? error.message : "登録完了。ログインしてください"
+const SCHOOL_DOMAIN = "@edu.nishiyamato.ed.jp";
+
+// DOM
+const authDiv = document.getElementById("auth");
+const appDiv = document.getElementById("app");
+const msg = document.getElementById("message");
+const userEmail = document.getElementById("userEmail");
+
+// 学校ドメインチェック
+function isSchoolEmail(email) {
+  return email.endsWith(SCHOOL_DOMAIN);
 }
 
-async function login() {
-  const email = emailValue()
-  const password = passwordValue()
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-  if (error) status.textContent = error.message
-  else {
-    user = data.user
-    status.textContent = "ログイン中：" + user.email
+// 新規登録
+window.signUp = async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if (!isSchoolEmail(email)) {
+    msg.textContent = "学校のメールアドレスのみ使用できます";
+    return;
   }
-}
 
-async function addCard() {
-  if (!user) return alert("ログインしてください")
-  await supabase.from("cards").insert({
-    front: document.getElementById("front").value,
-    back: document.getElementById("back").value,
-    is_public: document.getElementById("isPublic").checked,
-    user_id: user.id
-  })
-  alert("保存しました")
-}
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
 
-async function loadPublic() {
-  const ul = document.getElementById("cards")
-  ul.innerHTML = ""
-  const { data } = await supabase
-    .from("cards")
-    .select("front, back")
-    .eq("is_public", true)
-  data.forEach(c => {
-    const li = document.createElement("li")
-    li.textContent = `${c.front} → ${c.back}`
-    ul.appendChild(li)
-  })
-}
+  msg.textContent = error ? error.message : "登録完了！ログインしてください";
+};
 
-function emailValue() {
-  return document.getElementById("email").value
-}
-function passwordValue() {
-  return document.getElementById("password").value
-}
+// ログイン
+window.signIn = async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if (!isSchoolEmail(email)) {
+    msg.textContent = "学校のメールアドレスのみ使用できます";
+    return;
+  }
+
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  msg.textContent = error ? error.message : "";
+};
+
+// ログアウト
+window.logout = async () => {
+  await supabase.auth.signOut();
+};
+
+// ログイン状態監視
+supabase.auth.onAuthStateChange((_event, session) => {
+  if (session) {
+    authDiv.style.display = "none";
+    appDiv.style.display = "block";
+    userEmail.textContent = "ログイン中: " + session.user.email;
+  } else {
+    authDiv.style.display = "block";
+    appDiv.style.display = "none";
+  }
+});
