@@ -1,35 +1,31 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>みんなの暗記サイト</title>
+  <meta charset="UTF-8" />
+  <title>学校用みんなの暗記サイト</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <h1>みんなの暗記サイト</h1>
+  <h1>学校用 暗記サイト</h1>
 
-  <h2>ログイン / 新規登録</h2>
-  <input id="email" placeholder="メールアドレス">
-  <input id="password" type="password" placeholder="パスワード">
-  <button onclick="signUp()">新規登録</button>
-  <button onclick="login()">ログイン</button>
-  <p id="status">未ログイン</p>
+  <!-- ログイン -->
+  <div id="auth">
+    <input id="email" type="email" placeholder="学校のメール (@edu.nishiyamato.ed.jp)" />
+    <input id="password" type="password" placeholder="パスワード" />
+    <br><br>
+    <button onclick="signUp()">新規登録</button>
+    <button onclick="signIn()">ログイン</button>
+    <p id="message"></p>
+  </div>
 
-  <hr>
+  <!-- ログイン後 -->
+  <div id="app" style="display:none;">
+    <p id="userEmail"></p>
+    <button onclick="logout()">ログアウト</button>
+    <hr>
+    <p>ここに暗記機能を作っていく</p>
+  </div>
 
-  <h2>暗記カード作成</h2>
-  <input id="front" placeholder="問題">
-  <input id="back" placeholder="答え">
-  <label>
-    <input type="checkbox" id="isPublic"> 公開する
-  </label>
-  <button onclick="addCard()">保存</button>
-
-  <h2>みんなの公開カード</h2>
-  <button onclick="loadPublic()">更新</button>
-  <ul id="cards"></ul>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="main.js"></script>
+  <script type="module" src="main.js"></script>
 </body>
 </html>
-
