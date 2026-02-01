@@ -9,39 +9,34 @@
 
 <h1>みんなの暗記サイト</h1>
 
-<!-- ログイン・新規登録 -->
 <div id="auth">
   <h2>ログイン / 新規登録</h2>
   <input id="email" type="email" placeholder="学校メール" /><br>
   <input id="password" type="password" placeholder="パスワード" /><br><br>
-  <button type="button" onclick="signUp()">新規登録</button>
-  <button type="button" onclick="signIn()">ログイン</button>
-  <p id="auth-message"></p>
+  <button onclick="signUp()">新規登録</button>
+  <button onclick="signIn()">ログイン</button>
 </div>
 
-<!-- ログイン後（自分のページ） -->
 <div id="app" style="display:none;">
-  <h2>マイページ</h2>
   <p id="user-email"></p>
 
-  <h3>暗記カードを追加</h3>
-  <input id="question" placeholder="問題" />
-  <input id="answer" placeholder="答え" />
-  <button type="button" onclick="addCard()">追加</button>
+  <input id="question" placeholder="問題">
+  <input id="answer" placeholder="答え">
+  <button onclick="addCard()">追加</button>
 
-  <h3>自分のカード</h3>
   <ul id="card-list"></ul>
 
-  <br>
-  <button type="button" onclick="logout()">ログアウト</button>
+  <button onclick="logout()">ログアウト</button>
 </div>
 
-<!-- Supabase SDK（宣言しない） -->
+<!-- Supabase CDN（1回だけ） -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- 自分のJS -->
+<!-- main.js（1回だけ・moduleにしない） -->
 <script src="main.js"></script>
+
 </body>
 </html>
+
 
 
