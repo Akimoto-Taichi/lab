@@ -7,16 +7,21 @@ const supabase = window.supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
+// ===== DOM取得（重要）=====
+const authDiv = document.getElementById("auth");
+const appDiv = document.getElementById("app");
+const userEmail = document.getElementById("user-email");
+
 // ===== 認証状態で画面切替 =====
 supabase.auth.onAuthStateChange((event, session) => {
   if (session) {
-    auth.style.display = "none";
-    app.style.display = "block";
-    user-email.textContent = session.user.email;
+    authDiv.style.display = "none";
+    appDiv.style.display = "block";
+    userEmail.textContent = session.user.email;
     loadCards();
   } else {
-    auth.style.display = "block";
-    app.style.display = "none";
+    authDiv.style.display = "block";
+    appDiv.style.display = "none";
   }
 });
 
@@ -39,7 +44,10 @@ async function signIn() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
   if (error) alert(error.message);
 }
 
@@ -53,18 +61,28 @@ async function addCard() {
   const question = document.getElementById("question").value;
   const answer = document.getElementById("answer").value;
 
-  await supabase.from("cards").insert({ question, answer });
+  await supabase.from("cards").insert({
+    question,
+    answer
+  });
+
   loadCards();
 }
 
 // ===== カード取得 =====
 async function loadCards() {
-  const { data } = await supabase.from("cards").select("*");
+  const { data } = await supabase
+    .from("cards")
+    .select("*")
+    .order("created_at", { ascending: false });
+
   const list = document.getElementById("card-list");
   list.innerHTML = "";
-  data.forEach(c => {
+
+  data.forEach(card => {
     const li = document.createElement("li");
-    li.textContent = `${c.question} → ${c.answer}`;
+    li.textContent = `${card.question} → ${card.answer}`;
     list.appendChild(li);
   });
 }
+
