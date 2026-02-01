@@ -4,46 +4,44 @@
   <meta charset="UTF-8" />
   <title>みんなの暗記サイト</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    body { font-family: sans-serif; max-width: 700px; margin: auto; padding: 16px; }
-    input, textarea, button { width: 100%; margin: 6px 0; padding: 8px; }
-    .card { border: 1px solid #ccc; padding: 10px; margin-top: 8px; }
-    .row { display: flex; gap: 8px; }
-  </style>
 </head>
 <body>
 
 <h1>みんなの暗記サイト</h1>
 
-<!-- 認証画面 -->
+<!-- ログイン・新規登録 -->
 <div id="auth">
-  <input id="email" type="email" placeholder="学校メール（@edu.nishiyamato.ed.jp）">
-  <input id="password" type="password" placeholder="パスワード">
-  <div class="row">
-    <button onclick="signUp()">新規登録</button>
-    <button onclick="signIn()">ログイン</button>
-  </div>
-  <p id="status"></p>
+  <h2>ログイン / 新規登録</h2>
+  <input id="email" type="email" placeholder="学校メール" /><br>
+  <input id="password" type="password" placeholder="パスワード" /><br><br>
+  <button type="button" onclick="signUp()">新規登録</button>
+  <button type="button" onclick="signIn()">ログイン</button>
+  <p id="auth-message"></p>
 </div>
 
-<!-- 個人ページ -->
+<!-- ログイン後（自分のページ） -->
 <div id="app" style="display:none;">
-  <button onclick="signOut()">ログアウト</button>
+  <h2>マイページ</h2>
+  <p id="user-email"></p>
 
-  <h2>カード追加</h2>
-  <textarea id="question" placeholder="問題"></textarea>
-  <textarea id="answer" placeholder="答え"></textarea>
-  <label>
-    <input type="checkbox" id="is_public"> 学校内に公開
-  </label>
-  <button onclick="addCard()">追加</button>
+  <h3>暗記カードを追加</h3>
+  <input id="question" placeholder="問題" />
+  <input id="answer" placeholder="答え" />
+  <button type="button" onclick="addCard()">追加</button>
 
-  <h2>カード一覧</h2>
-  <div id="cards"></div>
+  <h3>自分のカード</h3>
+  <ul id="card-list"></ul>
+
+  <br>
+  <button type="button" onclick="logout()">ログアウト</button>
 </div>
 
+<!-- Supabase SDK（宣言しない） -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- 自分のJS -->
 <script src="main.js"></script>
 </body>
 </html>
+
 
