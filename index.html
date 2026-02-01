@@ -1,76 +1,35 @@
 <!DOCTYPE html>
-</div>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>みんなの暗記サイト</title>
+</head>
+<body>
+  <h1>みんなの暗記サイト</h1>
 
+  <h2>ログイン / 新規登録</h2>
+  <input id="email" placeholder="メールアドレス">
+  <input id="password" type="password" placeholder="パスワード">
+  <button onclick="signUp()">新規登録</button>
+  <button onclick="login()">ログイン</button>
+  <p id="status">未ログイン</p>
 
-<script>
-// ===== userId 自動生成 =====
-let userId = localStorage.getItem("userId");
-if (!userId) {
-userId = crypto.randomUUID();
-localStorage.setItem("userId", userId);
-}
+  <hr>
 
+  <h2>暗記カード作成</h2>
+  <input id="front" placeholder="問題">
+  <input id="back" placeholder="答え">
+  <label>
+    <input type="checkbox" id="isPublic"> 公開する
+  </label>
+  <button onclick="addCard()">保存</button>
 
-const GAS_URL = "https://script.google.com/a/macros/edu.nishiyamato.ed.jp/s/AKfycbwzF4N3KWNRuBPFPNbqu0gZHZACM8r97fDgirnNoaDvmmouSl1cbJPEozOc_WdItloIVg/exec";
-let cards = [];
-let current = null;
+  <h2>みんなの公開カード</h2>
+  <button onclick="loadPublic()">更新</button>
+  <ul id="cards"></ul>
 
-
-function addCard() {
-const q = document.getElementById("q").value;
-const a = document.getElementById("a").value;
-if (!q || !a) return;
-
-
-fetch(GAS_URL, {
-method: "POST",
-body: JSON.stringify({ mode: "add", userId, q, a })
-}).then(() => {
-document.getElementById("q").value = "";
-document.getElementById("a").value = "";
-loadCards();
-});
-}
-
-
-function loadCards() {
-fetch(GAS_URL, {
-method: "POST",
-body: JSON.stringify({ mode: "get", userId })
-})
-.then(r => r.json())
-.then(d => {
-cards = d;
-if (cards.length > 0) {
-document.getElementById("study").style.display = "block";
-nextCard();
-}
-});
-}
-
-
-function nextCard() {
-current = cards[Math.floor(Math.random() * cards.length)];
-document.getElementById("question").textContent = current.question;
-document.getElementById("answer").style.display = "none";
-}
-
-
-function showAnswer() {
-document.getElementById("answer").textContent = current.answer;
-document.getElementById("answer").style.display = "block";
-}
-
-
-function judge(correct) {
-fetch(GAS_URL, {
-method: "POST",
-body: JSON.stringify({ mode: "judge", userId, id: current.id, correct })
-}).then(() => nextCard());
-}
-
-
-loadCards();
-</script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="main.js"></script>
 </body>
 </html>
+
