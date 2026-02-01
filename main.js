@@ -7,7 +7,7 @@ const supabase = window.supabase.createClient(
   SUPABASE_ANON_KEY
 );
 
-// ===== DOM取得（重要）=====
+// DOM
 const authDiv = document.getElementById("auth");
 const appDiv = document.getElementById("app");
 const userEmail = document.getElementById("user-email");
@@ -35,8 +35,14 @@ async function signUp() {
     return;
   }
 
-  const { error } = await supabase.auth.signUp({ email, password });
-  if (error) alert(error.message);
+  const { error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert("登録失敗: " + error.message);
+  }
 }
 
 // ===== ログイン =====
@@ -48,7 +54,10 @@ async function signIn() {
     email,
     password
   });
-  if (error) alert(error.message);
+
+  if (error) {
+    alert("ログイン失敗: " + error.message);
+  }
 }
 
 // ===== ログアウト =====
@@ -71,18 +80,19 @@ async function addCard() {
 
 // ===== カード取得 =====
 async function loadCards() {
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("cards")
-    .select("*")
+    .select("id, question, answer, created_at")
     .order("created_at", { ascending: false });
+
+  if (error) return;
 
   const list = document.getElementById("card-list");
   list.innerHTML = "";
 
-  data.forEach(card => {
+  data.forEach(c => {
     const li = document.createElement("li");
-    li.textContent = `${card.question} → ${card.answer}`;
+    li.textContent = `${c.question} → ${c.answer}`;
     list.appendChild(li);
   });
 }
-
